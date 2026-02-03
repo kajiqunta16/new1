@@ -1,7 +1,6 @@
 import express, { Application } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
 import userRoutes from "./routes/user-routes";
@@ -14,25 +13,29 @@ dotenv.config();
 const app: Application = express();
 const PORT: number = Number(process.env.PORT) || 5000;
 
-// MongoDB Connection
-mongoose
-  .connect(process.env.MONGODB_URI as string)
-  .then((): void => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err: Error): void => {
-    console.error("Error connecting to MongoDB", err);
-  });
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is not defined");
+}
 
 // Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Routes
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
 app.use("/cart", cartRoutes);
+
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then((): void => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err: Error): void => {
+    console.error("Error connecting to MongoDB", err);
+  });
 
 // Server
 app.listen(PORT, (): void => {
