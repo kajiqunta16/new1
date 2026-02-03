@@ -2,7 +2,6 @@ import express, { Application } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import userRoutes from "./routes/user-routes";
 import productRoutes from "./routes/product-routes";
 import orderRoutes from "./routes/order-routes";
